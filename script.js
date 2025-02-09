@@ -1,3 +1,4 @@
+// Importujeme THREE.js z CDN
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.137.5/build/three.module.js';
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.137.5/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.137.5/examples/jsm/controls/OrbitControls.js';
