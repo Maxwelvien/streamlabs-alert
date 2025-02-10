@@ -31,19 +31,20 @@ const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x00ffff, linewidth: 3
 const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
 card.add(edges);
 
-// **Text "M" - vícebarevné efekty**
+// **Text "M" - vícebarevné efekty s vrstvami**
 const loader = new THREE.FontLoader();
 loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function(font) {
     const textGroup = new THREE.Group();
     
-    const colors = [0xFFD700, 0x00FFFF, 0xFF00FF, 0x5500AA]; // Zlatá, azurová, purpurová, fialová
-    const offsets = [0, 0.02, -0.02, 0.04];
+    const colors = [0xFFD700, 0x5500AA, 0x00FFFF, 0xFFD700, 0x00FFFF, 0xFFD700, 0x5500AA, 0xFFD700]; // Zlatá, fialová, modrá
+    const sizes = [0.85, 0.75, 0.65, 0.55, 0.45, 0.35, 0.25, 0.15];
+    const depths = [0.04, 0.035, 0.03, 0.025, 0.02, 0.015, 0.01, 0.005];
     
     colors.forEach((color, index) => {
         const textGeometry = new THREE.TextGeometry('M', {
             font: font,
-            size: 0.7,
-            height: 0.01, // Zploštěné 2D provedení
+            size: sizes[index], // Postupné zmenšování velikosti
+            height: 0.01, // Zachování plochého vzhledu
             bevelEnabled: false
         });
         
@@ -55,7 +56,7 @@ loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json
         });
         
         const text = new THREE.Mesh(textGeometry, textMaterial);
-        text.position.set(-0.35 + offsets[index], -0.2 + offsets[index], 0.06);
+        text.position.set(-0.35, -0.2, 0.06 + depths[index]); // Každá vrstva je o kousek nad předchozí
         textGroup.add(text);
     });
     
