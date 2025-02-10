@@ -1,3 +1,9 @@
+<!-- Načteme Three.js knihovnu -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<!-- Načteme FontLoader -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/jsm/loaders/FontLoader.js"></script>
+
+<script>
 // Inicializace scény
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -83,3 +89,4 @@ function animate() {
     renderer.render(scene, camera);
 }
 animate();
+</script>
