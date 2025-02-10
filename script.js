@@ -15,11 +15,32 @@ const pointLight = new THREE.PointLight(0x00ffff, 10, 10);
 pointLight.position.set(0, 0, 3);
 scene.add(pointLight);
 
-// Přidání testovací krychle
-const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
-const cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
+// **Vytvoření karty**
+const cardGeometry = new THREE.BoxGeometry(3, 2, 0.1);
+const cardMaterial = new THREE.MeshStandardMaterial({
+  color: 0x222222, // Tmavá šedá barva karty
+  metalness: 0.7, 
+  roughness: 0.3
+});
+const card = new THREE.Mesh(cardGeometry, cardMaterial);
+scene.add(card);
+
+// **Neonový okraj**
+const edgeGeometry = new THREE.EdgesGeometry(cardGeometry);
+const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x00ffff, linewidth: 3 });
+const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
+card.add(edges);
+
+// **Lehké podsvícení pozadí**
+const glowGeometry = new THREE.PlaneGeometry(3.5, 2.5);
+const glowMaterial = new THREE.MeshBasicMaterial({ 
+    color: 0x00ffff, 
+    transparent: true, 
+    opacity: 0.2 
+});
+const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+glow.position.set(0, 0, -0.2);
+scene.add(glow);
 
 // Ovládání kamery
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -27,11 +48,6 @@ const controls = new THREE.OrbitControls(camera, renderer.domElement);
 // Animace renderování
 function animate() {
     requestAnimationFrame(animate);
-    
-    // Rotace krychle pro kontrolu
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
-
     renderer.render(scene, camera);
 }
 animate();
