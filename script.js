@@ -10,7 +10,7 @@ document.body.appendChild(renderer.domElement);
 // Čistě modrá karta (původní barva)
 const cardGeometry = new THREE.BoxGeometry(3, 2, 0.1);
 const cardMaterial = new THREE.MeshStandardMaterial({
-  color: 0x0000ff, // Modrá barva karty
+  color: 0x222222, // Tmavá šedá barva karty
   metalness: 0.7, 
   roughness: 0.3
 });
