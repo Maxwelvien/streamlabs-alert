@@ -1,6 +1,4 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.137.5/build/three.module.js';
-import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.137.5/examples/jsm/loaders/GLTFLoader.js';
-import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.137.5/examples/jsm/controls/OrbitControls.js';
+// THREE.js je už načtený globálně, takže ho můžeme rovnou použít
 
 // Inicializace scény
 const scene = new THREE.Scene();
@@ -19,49 +17,12 @@ const pointLight = new THREE.PointLight(0x00ffff, 10, 10);
 pointLight.position.set(0, 0, 3);
 scene.add(pointLight);
 
-// Tvorba karty
-const cardGeometry = new THREE.BoxGeometry(2, 3, 0.1);
-const cardMaterial = new THREE.MeshStandardMaterial({
-  color: 0x222222,
-  metalness: 0.7,
-  roughness: 0.3
-});
-const card = new THREE.Mesh(cardGeometry, cardMaterial);
-scene.add(card);
-
-// Přidání neonového efektu na hrany
-const edgeGeometry = new THREE.EdgesGeometry(cardGeometry);
-const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x00ffff, linewidth: 3 });
-const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
-card.add(edges);
-
-// Přidání zlatého emblému "M"
-const fontLoader = new THREE.FontLoader();
-fontLoader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function(font) {
-  const textGeometry = new THREE.TextGeometry('M', {
-    font: font,
-    size: 0.8,
-    height: 0.1,
-  });
-  const textMaterial = new THREE.MeshStandardMaterial({ color: 0xffd700, metalness: 1, roughness: 0.2 });
-  const textMesh = new THREE.Mesh(textGeometry, textMaterial);
-  textMesh.position.set(-0.3, -0.3, 0.06);
-  card.add(textMesh);
-});
-
-// Přidání světelného efektu do pozadí
-const glowGeometry = new THREE.PlaneGeometry(3, 4);
-const glowMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 0.3 });
-const glow = new THREE.Mesh(glowGeometry, glowMaterial);
-glow.position.set(0, 0, -0.2);
-scene.add(glow);
-
 // Ovládání kamery
-const controls = new OrbitControls(camera, renderer.domElement);
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
 
 // Animace renderování
 function animate() {
-  requestAnimationFrame(animate);
-  renderer.render(scene, camera);
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
 }
 animate();
