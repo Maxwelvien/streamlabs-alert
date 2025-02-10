@@ -7,7 +7,7 @@ const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-// Čistě modrá karta (původní barva)
+// Čistě tmavě šedá karta (změna barvy zpět)
 const cardGeometry = new THREE.BoxGeometry(3, 2, 0.1);
 const cardMaterial = new THREE.MeshStandardMaterial({
   color: 0x222222, // Tmavá šedá barva karty
@@ -22,7 +22,7 @@ const ambientLight = new THREE.AmbientLight(0x404040, 2);
 scene.add(ambientLight);
 
 const pointLight = new THREE.PointLight(0xaa00ff, 15, 12); // Fialové světlo
-pointLight.position.set(0, 0, 3);
+pointLight.position.set(0, 0, 6); // Posunuto dále od karty pro rovnoměrnější světlo
 scene.add(pointLight);
 
 // **Neonový okraj karty**
