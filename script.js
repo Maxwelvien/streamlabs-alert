@@ -43,7 +43,6 @@ const circle = new THREE.Mesh(circleGeometry, circleMaterial);
 circle.position.set(0, 0, 0.06); // Mírně nad povrch karty
 card.add(circle);
 
-// **Přidání zlatého písmena M**
 const loader = new THREE.FontLoader();
 loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function(font) {
     const textGeometry = new THREE.TextGeometry('M', {
@@ -51,9 +50,9 @@ loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json
         size: 0.5,
         height: 0.05,
     });
-    const textMaterial = new THREE.MeshStandardMaterial({ color: 0xFFD700 }); // Zlatá barva
+    const textMaterial = new THREE.MeshStandardMaterial({ color: 0xFFD700 });
     const text = new THREE.Mesh(textGeometry, textMaterial);
-    text.position.set(-0.25, 0, 0.1); // Střed karty
+    text.position.set(-0.25, 0, 0.1);
     card.add(text);
 });
 
