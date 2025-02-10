@@ -31,27 +31,28 @@ const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x00ffff, linewidth: 3
 const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
 card.add(edges);
 
-// **Text "M" - vylepšený vzhled**
+// **Text "M" - plošné provedení s modrofialovými vlákny**
 const loader = new THREE.FontLoader();
 loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function(font) {
     const textGeometry = new THREE.TextGeometry('M', {
         font: font,
         size: 0.7,
-        height: 0.1,
-        bevelEnabled: true,
-        bevelThickness: 0.02,
-        bevelSize: 0.03,
-        bevelOffset: 0,
-        bevelSegments: 5
+        height: 0.01, // Zploštěné 2D provedení
+        bevelEnabled: false
     });
-    const textMaterial = new THREE.MeshStandardMaterial({ color: 0xFFD700, emissive: 0x996600, metalness: 1, roughness: 0.2 });
+    
+    // Vytvoření gradientního materiálu s modrofialovými efekty
+    const textMaterial = new THREE.MeshStandardMaterial({ 
+        color: 0xFFD700, 
+        emissive: 0x5500AA, // Modrofialový zářivý efekt
+        metalness: 0.8, 
+        roughness: 0.3
+    });
+    
     const text = new THREE.Mesh(textGeometry, textMaterial);
-    text.position.set(-0.35, -0.2, 0.1); // Vycentrováno
+    text.position.set(-0.35, -0.2, 0.06); // Přiblíženo ke kartě
     card.add(text);
 });
-
-// **Odstranění pevného kolečka pod M**
-// Původně zde bylo, ale odstraněno
 
 // **Ovládání kamery**
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
