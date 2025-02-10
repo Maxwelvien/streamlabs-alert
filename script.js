@@ -17,12 +17,12 @@ const cardMaterial = new THREE.MeshStandardMaterial({
 const card = new THREE.Mesh(cardGeometry, cardMaterial);
 scene.add(card);
 
-// **Světlo - jemně upravené**
+// **Světlo - futuristický modrofialový vzhled**
 const ambientLight = new THREE.AmbientLight(0x404040, 2);
 scene.add(ambientLight);
 
-const pointLight = new THREE.PointLight(0xaa00ff, 15, 12); // Fialové světlo
-pointLight.position.set(0, 0, 6); // Posunuto dále od karty pro rovnoměrnější světlo
+const pointLight = new THREE.PointLight(0x7700ff, 20, 15); // Modrofialové světlo
+pointLight.position.set(0, 0, 8); // Posunuto dále pro lepší rozložení světla
 scene.add(pointLight);
 
 // **Neonový okraj karty**
@@ -31,27 +31,35 @@ const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x00ffff, linewidth: 3
 const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
 card.add(edges);
 
-// **Text "M" - plošné provedení s modrofialovými vlákny**
+// **Text "M" - vícebarevné efekty**
 const loader = new THREE.FontLoader();
 loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function(font) {
-    const textGeometry = new THREE.TextGeometry('M', {
-        font: font,
-        size: 0.7,
-        height: 0.01, // Zploštěné 2D provedení
-        bevelEnabled: false
+    const textGroup = new THREE.Group();
+    
+    const colors = [0xFFD700, 0x00FFFF, 0xFF00FF, 0x5500AA]; // Zlatá, azurová, purpurová, fialová
+    const offsets = [0, 0.02, -0.02, 0.04];
+    
+    colors.forEach((color, index) => {
+        const textGeometry = new THREE.TextGeometry('M', {
+            font: font,
+            size: 0.7,
+            height: 0.01, // Zploštěné 2D provedení
+            bevelEnabled: false
+        });
+        
+        const textMaterial = new THREE.MeshStandardMaterial({ 
+            color: color, 
+            emissive: color, // Každá vrstva má svůj zářivý efekt
+            metalness: 0.8, 
+            roughness: 0.3
+        });
+        
+        const text = new THREE.Mesh(textGeometry, textMaterial);
+        text.position.set(-0.35 + offsets[index], -0.2 + offsets[index], 0.06);
+        textGroup.add(text);
     });
     
-    // Vytvoření gradientního materiálu s modrofialovými efekty
-    const textMaterial = new THREE.MeshStandardMaterial({ 
-        color: 0xFFD700, 
-        emissive: 0x5500AA, // Modrofialový zářivý efekt
-        metalness: 0.8, 
-        roughness: 0.3
-    });
-    
-    const text = new THREE.Mesh(textGeometry, textMaterial);
-    text.position.set(-0.35, -0.2, 0.06); // Přiblíženo ke kartě
-    card.add(text);
+    card.add(textGroup);
 });
 
 // **Ovládání kamery**
