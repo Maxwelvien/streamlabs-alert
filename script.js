@@ -1,4 +1,3 @@
-// Importujeme THREE.js z CDN
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.137.5/build/three.module.js';
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.137.5/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.137.5/examples/jsm/controls/OrbitControls.js';
@@ -57,32 +56,12 @@ const glow = new THREE.Mesh(glowGeometry, glowMaterial);
 glow.position.set(0, 0, -0.2);
 scene.add(glow);
 
-// Animace přiblížení a dopadu
-function animateCard() {
-  card.position.set(0, 5, 0);
-  card.rotation.set(0, 0, 0);
-  
-  const tween = new TWEEN.Tween(card.position)
-    .to({ y: 0 }, 1000)
-    .easing(TWEEN.Easing.Bounce.Out)
-    .start();
-  
-  const rotateTween = new TWEEN.Tween(card.rotation)
-    .to({ y: Math.PI * 2 }, 1200)
-    .easing(TWEEN.Easing.Quadratic.Out)
-    .start();
-}
-
 // Ovládání kamery
 const controls = new OrbitControls(camera, renderer.domElement);
 
 // Animace renderování
 function animate() {
   requestAnimationFrame(animate);
-  TWEEN.update();
   renderer.render(scene, camera);
 }
 animate();
-
-// Spuštění animace při načtení
-setTimeout(animateCard, 1000);
