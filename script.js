@@ -21,8 +21,8 @@ scene.add(card);
 const ambientLight = new THREE.AmbientLight(0x404040, 2);
 scene.add(ambientLight);
 
-const pointLight = new THREE.PointLight(0x7700ff, 20, 15); // Modrofialové světlo
-pointLight.position.set(0, 0, 8); // Posunuto dále pro lepší rozložení světla
+const pointLight = new THREE.PointLight(0x7700ff, 15, 25); // Modrofialové světlo
+pointLight.position.set(0, 0, 12); // Posunuto ještě dále pro rovnoměrnější osvětlení
 scene.add(pointLight);
 
 // **Neonový okraj karty**
@@ -37,8 +37,8 @@ loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json
     const textGroup = new THREE.Group();
     
     const colors = [0xFFD700, 0x5500AA, 0x00FFFF, 0xFFD700, 0x00FFFF, 0xFFD700, 0x5500AA, 0xFFD700]; // Zlatá, fialová, modrá
-    const sizes = [0.85, 0.75, 0.65, 0.55, 0.45, 0.35, 0.25, 0.15];
-    const depths = [0.04, 0.035, 0.03, 0.025, 0.02, 0.015, 0.01, 0.005];
+    const sizes = [1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3]; // Větší na začátku
+    const depths = [-0.01, -0.02, -0.03, -0.04, -0.05, -0.06, -0.07, -0.08]; // Postupné prohlubování
     
     colors.forEach((color, index) => {
         const textGeometry = new THREE.TextGeometry('M', {
@@ -56,7 +56,7 @@ loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json
         });
         
         const text = new THREE.Mesh(textGeometry, textMaterial);
-        text.position.set(-0.35, -0.2, 0.06 + depths[index]); // Každá vrstva je o kousek nad předchozí
+        text.position.set(-0.35, -0.2, depths[index]); // Každá vrstva je o kousek níže než předchozí
         textGroup.add(text);
     });
     
@@ -69,7 +69,7 @@ const controls = new THREE.OrbitControls(camera, renderer.domElement);
 // **Animace renderování s pomalejší rotací**
 function animate() {
     requestAnimationFrame(animate);
-    card.rotation.y += 0.005; // Zpomaleno
+    card.rotation.y += 0.003; // Zpomaleno ještě více
     renderer.render(scene, camera);
 }
 animate();
