@@ -50,11 +50,6 @@ card.castShadow = true;
 card.receiveShadow = true;
 scene.add(card);
 
-// Přidání neonového okraje (hran) pro zvýraznění obrysů
-const edgeGeometry = new THREE.EdgesGeometry(cardGeometry);
-const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x00ffff, linewidth: 3 });
-const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
-card.add(edges);
 
 // Osvětlení scény
 
@@ -63,13 +58,13 @@ const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
 scene.add(ambientLight);
 
 // Světlo čelně z levého horního rohu (pro krátké, dynamické stíny)
-const frontLight = new THREE.DirectionalLight(0x7700ff, 1.5);
+const frontLight = new THREE.DirectionalLight(0x404040, 1.5);
 frontLight.position.set(-5, 5, 5);
 frontLight.castShadow = true;
 scene.add(frontLight);
 
 // Světlo ze zadní strany, aby byla karta osvětlená i zezadu
-const backLight = new THREE.DirectionalLight(0x7700ff, 1.0);
+const backLight = new THREE.DirectionalLight(0x404040, 1.0);
 backLight.position.set(5, 5, -5);
 backLight.castShadow = true;
 scene.add(backLight);
