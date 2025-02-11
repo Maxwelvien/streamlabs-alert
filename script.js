@@ -25,6 +25,11 @@ const pointLight = new THREE.PointLight(0x7700ff, 15, 25); // Modrofialové svě
 pointLight.position.set(0, 0, 12); // Posunuto ještě dále pro rovnoměrnější osvětlení
 scene.add(pointLight);
 
+// **Druhý světelný zdroj - modrá neonová barva**
+const secondLight = new THREE.PointLight(0x00aaff, 10, 50); // Modrá neonová barva
+secondLight.position.set(0, 0, 24); // Dvojnásobná vzdálenost oproti fialovému světlu
+scene.add(secondLight);
+
 // **Neonový okraj karty**
 const edgeGeometry = new THREE.EdgesGeometry(cardGeometry);
 const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x00ffff, linewidth: 3 });
@@ -47,6 +52,7 @@ loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json
             height: 0.01, // Zachování plochého vzhledu
             bevelEnabled: false
         });
+        textGeometry.center(); // **Vycentrování každého "M"**
         
         const textMaterial = new THREE.MeshStandardMaterial({ 
             color: color, 
@@ -56,7 +62,7 @@ loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json
         });
         
         const text = new THREE.Mesh(textGeometry, textMaterial);
-        text.position.set(-0.35, -0.2, depths[index]); // Každá vrstva je o kousek níže než předchozí
+        text.position.set(0, -0.2, depths[index]); // Každá vrstva je o kousek níže než předchozí
         textGroup.add(text);
     });
     
