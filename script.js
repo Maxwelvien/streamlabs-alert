@@ -75,7 +75,7 @@ const controls = new THREE.OrbitControls(camera, renderer.domElement);
 // **Animace renderování s pomalejší rotací**
 function animate() {
     requestAnimationFrame(animate);
-    card.rotation.y += 0.003; // Zpomaleno ještě více
+    card.rotation.y += 0.03; // Zpomaleno ještě více
     renderer.render(scene, camera);
 }
 animate();
