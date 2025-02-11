@@ -1,81 +1,85 @@
-// Inicializace scény
+// Inicializace scény, kamery a rendereru
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.set(0, 0, 5);
 
 const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
 document.body.appendChild(renderer.domElement);
 
-// Čistě tmavě šedá karta (změna barvy zpět)
-const cardGeometry = new THREE.BoxGeometry(3, 2, 0.1);
+// Funkce pro vytvoření tvaru s oblými rohy (rounded rectangle)
+function createRoundedRectShape(width, height, radius) {
+  const shape = new THREE.Shape();
+  shape.moveTo(-width / 2 + radius, -height / 2);
+  shape.lineTo(width / 2 - radius, -height / 2);
+  shape.quadraticCurveTo(width / 2, -height / 2, width / 2, -height / 2 + radius);
+  shape.lineTo(width / 2, height / 2 - radius);
+  shape.quadraticCurveTo(width / 2, height / 2, width / 2 - radius, height / 2);
+  shape.lineTo(-width / 2 + radius, height / 2);
+  shape.quadraticCurveTo(-width / 2, height / 2, -width / 2, height / 2 - radius);
+  shape.lineTo(-width / 2, -height / 2 + radius);
+  shape.quadraticCurveTo(-width / 2, -height / 2, -width / 2 + radius, -height / 2);
+  return shape;
+}
+
+// Parametry karty
+const cardWidth = 3;
+const cardHeight = 2;
+const cardDepth = 0.05; // tenčí karta
+const cornerRadius = 0.3; // poloměr oblých rohů
+
+// Vytvoření geometrie karty pomocí extruze tvaru s oblými rohy
+const cardShape = createRoundedRectShape(cardWidth, cardHeight, cornerRadius);
+const extrudeSettings = {
+  steps: 1,
+  depth: cardDepth,
+  bevelEnabled: false
+};
+const cardGeometry = new THREE.ExtrudeGeometry(cardShape, extrudeSettings);
+
+// Futuristický, matný materiál karty
 const cardMaterial = new THREE.MeshStandardMaterial({
-  color: 0x222222, // Tmavá šedá barva karty
-  metalness: 0.7, 
-  roughness: 0.3
+  color: 0x1a1a1a,
+  metalness: 0.0,
+  roughness: 0.9
 });
 const card = new THREE.Mesh(cardGeometry, cardMaterial);
+card.castShadow = true;
+card.receiveShadow = true;
 scene.add(card);
 
-// **Světlo - futuristický modrofialový vzhled**
-const ambientLight = new THREE.AmbientLight(0x404040, 2);
-scene.add(ambientLight);
-
-const pointLight = new THREE.PointLight(0x7700ff, 15, 25); // Modrofialové světlo
-pointLight.position.set(0, 0, 12); // Posunuto ještě dále pro rovnoměrnější osvětlení
-scene.add(pointLight);
-
-// **Druhý světelný zdroj - modrá neonová barva**
-const secondLight = new THREE.PointLight(0x00aaff, 10, 50); // Modrá neonová barva
-secondLight.position.set(0, 0, 24); // Dvojnásobná vzdálenost oproti fialovému světlu
-scene.add(secondLight);
-
-// **Neonový okraj karty**
+// Přidání neonového okraje (hran) pro zvýraznění obrysů
 const edgeGeometry = new THREE.EdgesGeometry(cardGeometry);
 const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x00ffff, linewidth: 3 });
 const edges = new THREE.LineSegments(edgeGeometry, edgeMaterial);
 card.add(edges);
 
-// **Text "M" - vícebarevné efekty s vrstvami**
-const loader = new THREE.FontLoader();
-loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function(font) {
-    const textGroup = new THREE.Group();
-    
-    const colors = [0xFFD700, 0x5500AA, 0x00FFFF, 0xFFD700, 0x00FFFF, 0xFFD700, 0x5500AA, 0xFFD700]; // Zlatá, fialová, modrá
-    const sizes = [1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3]; // Větší na začátku
-    const depths = [-0.01, -0.02, -0.03, -0.04, -0.05, -0.06, -0.07, -0.08]; // Postupné prohlubování
-    
-    colors.forEach((color, index) => {
-        const textGeometry = new THREE.TextGeometry('M', {
-            font: font,
-            size: sizes[index], // Postupné zmenšování velikosti
-            height: 0.01, // Zachování plochého vzhledu
-            bevelEnabled: false
-        });
-        textGeometry.center(); // **Vycentrování každého "M"**
-        
-        const textMaterial = new THREE.MeshStandardMaterial({ 
-            color: color, 
-            emissive: color, // Každá vrstva má svůj zářivý efekt
-            metalness: 0.8, 
-            roughness: 0.3
-        });
-        
-        const text = new THREE.Mesh(textGeometry, textMaterial);
-        text.position.set(0, -0.2, depths[index]); // Každá vrstva je o kousek níže než předchozí
-        textGroup.add(text);
-    });
-    
-    card.add(textGroup);
-});
+// Osvětlení scény
 
-// **Ovládání kamery**
+// Jemné ambientní světlo pro základní vyplnění
+const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+scene.add(ambientLight);
+
+// Světlo čelně z levého horního rohu (pro krátké, dynamické stíny)
+const frontLight = new THREE.DirectionalLight(0x7700ff, 1.5);
+frontLight.position.set(-5, 5, 5);
+frontLight.castShadow = true;
+scene.add(frontLight);
+
+// Světlo ze zadní strany, aby byla karta osvětlená i zezadu
+const backLight = new THREE.DirectionalLight(0x7700ff, 1.0);
+backLight.position.set(5, 5, -5);
+backLight.castShadow = true;
+scene.add(backLight);
+
+// Ovládání kamery
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
 
-// **Animace renderování s pomalejší rotací**
+// Animace renderování
 function animate() {
-    requestAnimationFrame(animate);
-    card.rotation.y += 0; // Zpomaleno ještě více
-    renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+  // Místo rotace zde lze doplnit další animace
+  renderer.render(scene, camera);
 }
 animate();
