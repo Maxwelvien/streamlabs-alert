@@ -26,7 +26,7 @@ function createRoundedRectShape(width, height, radius) {
 // Parametry karty
 const cardWidth = 3;
 const cardHeight = 2;
-const cardDepth = 0.05; // tenčí karta
+const cardDepth = 0.03; // ještě tenčí karta
 const cornerRadius = 0.3; // poloměr oblých rohů
 
 // Vytvoření geometrie karty pomocí extruze tvaru s oblými rohy
@@ -40,9 +40,10 @@ const cardGeometry = new THREE.ExtrudeGeometry(cardShape, extrudeSettings);
 
 // Futuristický, matný materiál karty
 const cardMaterial = new THREE.MeshStandardMaterial({
-  color: 0x1a1a1a,
-  metalness: 0.0,
-  roughness: 0.9
+  color: 0x1c1c1c,
+  emissive: 0x001133,
+  metalness: 0.3,
+  roughness: 0.8
 });
 const card = new THREE.Mesh(cardGeometry, cardMaterial);
 card.castShadow = true;
@@ -73,13 +74,41 @@ backLight.position.set(5, 5, -5);
 backLight.castShadow = true;
 scene.add(backLight);
 
+// Vytvoření modelu písmena "M" s mírně vystupujícím profilem a kulatými hranami
+const fontLoader = new THREE.FontLoader();
+fontLoader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function(font) {
+    const mGeometry = new THREE.TextGeometry('M', {
+      font: font,
+      size: 1,
+      height: 0.1, // vystupující profil
+      bevelEnabled: true,
+      bevelThickness: 0.02,
+      bevelSize: 0.02,
+      bevelSegments: 3,
+      curveSegments: 12
+    });
+    mGeometry.center();
+    
+    const mMaterial = new THREE.MeshStandardMaterial({
+      color: 0xFFD700, // zlatá barva
+      metalness: 0.5,
+      roughness: 0.7
+    });
+    
+    const mMesh = new THREE.Mesh(mGeometry, mMaterial);
+    mMesh.castShadow = true;
+    mMesh.receiveShadow = true;
+    // Umístění písmena "M" přímo na kartu, mírně vystupující nad její přední plochu
+    mMesh.position.set(0, 0, cardDepth + 0.02);
+    card.add(mMesh);
+});
+
 // Ovládání kamery
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
 
 // Animace renderování
 function animate() {
   requestAnimationFrame(animate);
-  // Místo rotace zde lze doplnit další animace
   renderer.render(scene, camera);
 }
 animate();
