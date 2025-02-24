@@ -58,8 +58,8 @@ const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
 scene.add(ambientLight);
 
 // Světlo čelně z levého horního rohu (pro krátké, dynamické stíny)
-const frontLight = new THREE.DirectionalLight(0x404040, 1.5);
-frontLight.position.set(-5, 5, 5);
+const frontLight = new THREE.DirectionalLight(0x404040, 2);
+frontLight.position.set(-25, 20, 95);
 frontLight.castShadow = true;
 scene.add(frontLight);
 
@@ -75,9 +75,9 @@ fontLoader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.
     const mGeometry = new THREE.TextGeometry('M', {
       font: font,
       size: 1,
-      height: 0.1, // vystupující profil
+      height: 0.001, // vystupující profil
       bevelEnabled: true,
-      bevelThickness: 0.02,
+      bevelThickness: 0.01,
       bevelSize: 0.02,
       bevelSegments: 3,
       curveSegments: 12
@@ -86,17 +86,70 @@ fontLoader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.
     
     const mMaterial = new THREE.MeshStandardMaterial({
       color: 0xFFD700, // zlatá barva
-      metalness: 0.5,
-      roughness: 0.7
+      metalness: 0.8,
+      roughness: 0.3
     });
     
     const mMesh = new THREE.Mesh(mGeometry, mMaterial);
     mMesh.castShadow = true;
     mMesh.receiveShadow = true;
     // Umístění písmena "M" přímo na kartu, mírně vystupující nad její přední plochu
-    mMesh.position.set(0, 0, cardDepth + 0.02);
+    mMesh.position.set(0, 0.2, cardDepth + 0.0);
     card.add(mMesh);
 });
+
+// Funkce pro vytvoření kovového rohového chrániče
+function createCornerProtector(radius, thickness, depth) {
+    const shape = new THREE.Shape();
+    
+    // Vnější obrys s posunutým a zesíleným rádiusem
+    shape.absarc(0, 0, radius+0.078 + thickness-0.00, Math.PI, Math.PI / 2, true);
+    shape.lineTo(radius + thickness-0.38, radius + thickness);
+    shape.absarc(0, 0, radius+0.03, Math.PI / 2, Math.PI, false);
+    shape.lineTo(-radius - thickness, -radius+0.2 - thickness+0.18);
+    
+    // Extruze 3D tvaru
+    const extrudeSettings = {
+        steps: 1,
+        depth: depth, // Tloušťka ve směru Z
+        bevelEnabled: true,
+        bevelSize: 0.03, // Větší zaoblení hran
+        bevelThickness: 0.04
+    };
+    
+    return new THREE.ExtrudeGeometry(shape, extrudeSettings);
+}
+
+// Parametry ochranných rohů
+const protectorRadius = cornerRadius * 1.1; // Posunutí rádiusu blíže ke středu
+const protectorThickness = 0.08; // Další zvětšení tloušťky
+const protectorDepth = 0.04; // Zachování hloubky ve směru Z
+
+// Vytvoření materiálu (zlatý vzhled)
+const protectorMaterial = new THREE.MeshStandardMaterial({
+    color: 0xFFD700, // Zlatá
+    metalness: 0.8,
+    roughness: 0.3 // Snížení hrubosti pro elegantnější vzhled
+});
+
+// Vytvoření a přesnější umístění rohů
+const cornerPositions = [
+    { x: cardWidth / 2 - protectorRadius-0.1, y: cardHeight / 2 - protectorRadius-0.1, rotation: -Math.PI / 2 },
+    { x: -cardWidth / 2 + protectorRadius+0.1, y: cardHeight / 2 - protectorRadius-0.1, rotation: 0 },
+    { x: -cardWidth / 2 + protectorRadius+0.1, y: -cardHeight / 2 + protectorRadius+0.1, rotation: Math.PI / 2 },
+    { x: cardWidth / 2 - protectorRadius-0.1, y: -cardHeight / 2 + protectorRadius+0.1, rotation: Math.PI }
+];
+
+cornerPositions.forEach(pos => {
+    const cornerGeo = createCornerProtector(protectorRadius, protectorThickness, protectorDepth);
+    const cornerMesh = new THREE.Mesh(cornerGeo, protectorMaterial);
+    
+    // Posuneme je blíže ke kartě
+    cornerMesh.position.set(pos.x, pos.y, cardDepth / 2 - 0.03); // Ještě větší zapuštění
+    cornerMesh.rotation.z = pos.rotation;
+    card.add(cornerMesh);
+});
+
 
 // Ovládání kamery
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
